@@ -24,7 +24,7 @@
 
 \paragraph{}
 \indent 
-The International Geomagnetic Reference Field (IGRF) is a standard mathematical description of the Earth's magnetic field widely used in studies of the magnetosphere. The model is developed and maintained by the International Association of Geomagnetism and Aeronomy (IAGA) and it's going to be used as a base for a simplified model of the geomagnetic field, the dipole model.
+The International Geomagnetic Reference Field (IGRF) is a standard mathematical description of the Earth's magnetic field widely used in studies of the magnetosphere. The model is developed and maintained by the International Association of Geomagnetism and Aeronomy (IAGA) and it's going to be the model used in this simulation.
 
 \indent
 The objective of this section is to derive a mathematical expression that defines a magnetic flux density field over a Cartesian space described in spherical coordinates, hence by the end of the derivation it must be possible to assign a vector, representing the local magnetic field, to every point of an orbit around the Earth. 
@@ -47,37 +47,23 @@ Where $a$ is the Earth's radius, $g_{n}^{m}$,$h_{n}^m$ are named Gauss Coefficie
 Is this model, the convention used for the spherical coordinate system defines $r$ as the radial distance from the center of the Earth, $\theta$ as the co-latitude and $\phi$ as the east longitude.
 
 \indent 
-For the sake of simplicity in the initial simulations, the Dipole Approximation of the Geomagnetic Field is going to be used. In this approximation, only the first spherical harmonic of the expansion, $n=1$, the one whose contribution is greatest, is going to be considered. The equation for the the scalar potential then becomes:
+Based on the equation 2.1, it is possible to compute the magnetic flux density through the expression:
 
 \begin{equation}
-	\hat{V}(r,\theta,\phi,t) = a \left(  \frac{a}{r} \right)^{2} \left[ g_{1}^0 P_{1}^{0} \left(cos\theta \right) + g_{1}^{1} cos \phi P_{1}^1 \left(cos\theta \right) + h_{1}^1 sin \phi P_{1}^1 \left(cos\theta \right)\right]  
-\end{equation}
-
-\indent
-By replacing $P_{n}^{m} \left( cos\theta \right)$ by the appropriate Legendre polynomials, a final form for equation 2.2 can be found to be:
-
-\begin{equation}
-	\hat{V}(r,\theta,\phi,t) = a \left(  \frac{a}{r}\right)^{2} \left[ g_{1}^0cos\theta + g_{1}^{1}cos \phi sin \theta + h_{1}^1 sin \phi sin \theta \right]  
-\end{equation}
-
-\indent 
-And the approximated magnetic flux density can be found by the relation: 
-
-\begin{equation}
-	\hat{B} = - \nabla \hat{V}
+	\vec{B} = - \nabla V
 \end{equation}
 
 \indent
 In this equation, the gradient operator is described in spherical coordinates, hence the components of the magnetic flux density vector are given by:
 
 \begin{align*}
-	B_{r} &= -\frac{\partial \hat{V}}{\partial r} = \frac{2a^3}{r^3}\left[ g_{1}^0cos\theta + g_{1}^{1}cos \phi sin \theta + h_{1}^1 sin \phi sin \theta \right]   \\	
-	B_{\theta} &= -\frac{1}{r}\frac{\partial \hat{V}}{\partial \theta} = -\frac{a^3}{r^3}\left[ -g_{1}^0sin\theta + g_{1}^{1}cos \phi cos \theta + h_{1}^1 sin \phi cos \theta \right]   \\
-	B_{\phi} &= -\frac{1}{r sin \theta}\frac{\partial \hat{V}}{\partial \phi} = -\frac{a^3}{r^3  }\left[ -g_{1}^{1}sin \phi  + h_{1}^1 cos \phi  \right]   \\
+	B_{r} &= -\frac{\partial V}{\partial r}    \\	
+	B_{\theta} &= -\frac{1}{r}\frac{\partial V}{\partial \theta}   \\
+	B_{\phi} &= -\frac{1}{r sin \theta}\frac{\partial V}{\partial \phi}    \\
 \end{align*}
 
 \indent
-A explicit representation for the magnetic flux density vector with regard to it's basis vectors is given by:
+An explicit representation for the magnetic flux density vector with regard to it's basis vectors is given by:
 
 \begin{equation}
 	\vec{B} = B_{r}\hat{r} + B_{\theta}\hat{\theta} + B_{\phi}\hat{\phi}
@@ -114,7 +100,7 @@ After normalization:
 \begin{align*}
 	\hat{r} &= \frac{\partial R}{\partial r} = (sin\theta cos\phi,sin\theta sin\phi,cos\theta) \\
 	\hat{\theta} &= \frac{1}{r}\frac{\partial R}{\partial \theta}  = (cos\theta cos\phi, cos\theta sin\phi, -sin\theta) \\
-	\hat{\phi} &= \frac{\partial R}{\partial \phi} = (-sin\phi, cos\phi, 0) \\
+	\hat{\phi} &= \frac{1}{r sin \theta}\frac{\partial R}{\partial \phi} = (-sin\phi, cos\phi, 0) \\
 \end{align*}
 
 \indent 
