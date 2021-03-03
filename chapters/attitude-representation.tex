@@ -1,0 +1,56 @@
+%
+% geomagnetic-field-model.tex
+%
+% Copyright (C) 2020 by SpaceLab.
+%
+%
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+% International License. To view a copy of this license,
+% visit http://creativecommons.org/licenses/by-sa/4.0/.
+%
+%
+% \author Gabriel Mariano Marcelino <gabriel.mm8@gmail.com>
+%
+% \institution Universidade Federal de Santa Catarina (UFSC)
+%
+% \version 0.1.0
+%
+% \date 2020/07/16
+%
+
+\chapter{Attitude Representation} \label{ch:attitude-representation}
+
+\section{Introduction}
+
+\paragraph{}
+\indent 
+	Before building a concise attitude representation, there are two main topics that must discussed: the frames of reference that are going to be used in the computations and the chosen parameterization for spatial rotations. 
+
+\indent
+	Specifying an orientation in space only makes sense in a relative perspective, hence the objetive of this section is to define a procedure through which the numbers resulting from attitude computation can be traced back to it's physical interpretation. 
+
+\section{Reference Frames}
+
+\paragraph{}
+\indent
+	To mathematically describe the satellite's attitude in space, it is convenient to set an inertial reference frame, that is, a reference frame that does not, or at least approximatly not, experience acceleration, mostly because it helps at keeping the mathematics simple and clear. 
+
+\indent 
+	In this work, based on what has been presented on \cite{AAUSAT3}, the chosen inertial reference frame is the Earth Centered Inertial Reference Frame. In this reference frame, the x-axis is defined by a unit vector pointing in the direction of the vernal equinox, the point of intersection between the equatorial plane and the eclipitc in which the Sun's trajectory crosses the Equator moving from the Southern Hemisphere to the Northern Hemisphere, as viewed by an observert at Earth. The z-axis  is given by a unit vector in the direction of the geographic north pole axis, and, finally, the y-axis unit vector is the result of the cross-product between the x-axis unit vector and the z-axis unit vector. All equations describing attitude dynamics will be written with respect to this reference frame.
+
+\indent
+	Next, an idea of how to the describe attitude based on the definition of an inertial frame will be developed. First, it is relevant to point out that the geometry of the satellite is understood mathematically as a collection of points that move with a moving reference frame attached to the satellite, that is, those points are stationary when observed from such a moving reference frame. This is intuitive. In the inside of a car, if a person is holding a cellphone it seems's like the cellphone is static from the point of view of another passenger, but it is clear that the cellphone's position is changing according to the car's motion, from the perspective of an observer standing outside of the car. It is tempting to the describe, then, a point contained in the satellite's set of points, by:
+
+\begin{equation}
+	r^P_I = r^{B}_I + r^P_{B}
+\end{equation}
+
+\indent
+	This equation reads: "the position of the point P with respect to the inertial reference frame, I, equals the position of the origin of the B reference frame with respect to the inertial reference frame, I, plus the position of the point P with respect to the B reference frame". Where B is a reference frame attached to the satellite. To clearify what this expression means, an intermediate reference frame, B', is defined as a reference frame whose origin coincides with the origin of the B reference frame, but has all of it's axis parallel to the inertial frame's axis, that is, it only differs from the inertial reference frame by a translation operation. This means that the relation between the reference frames B and B' is a rotation operation. Mathematically: 
+
+\begin{equation}
+	r^P_I = r^{B}_I + R ^{B'}_{B} r^P_{B'}
+\end{equation}
+
+\indent
+	The capital letter $R$ is a rotation matrix that transforms the basis vectors of the B' reference frame into the basis vectors of the B reference frame and is the proposed definition of attitude. Attitude is the orientation of a body with respect to some reference placement in space that can be described by a the rotation that must take place in order to make the current placement of the body in space equal to the reference placement. In this case, the reference placement is the inertial reference frame, after the translation required by the position description, and the current placement is the so called Body Reference Frame, a reference frame that moves with the satellite and has two additional special properties. The first special property of the body reference frame is that it's origin is at the satellite's center of mass, making it invariant to rotational movements of the satellite. The second special property of the body reference frame is that in this reference frame the Inertia Tensor is constant and diagonal, which means that the basis vectors for this frame of reference are the normalized eigenvectors of the inertia tensor, that is, the body's principal axes of rotation.
