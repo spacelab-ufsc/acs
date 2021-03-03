@@ -54,3 +54,100 @@
 
 \indent
 	The capital letter $R$ is a rotation matrix that transforms the basis vectors of the B' reference frame into the basis vectors of the B reference frame and is the proposed definition of attitude. Attitude is the orientation of a body with respect to some reference placement in space that can be described by a the rotation that must take place in order to make the current placement of the body in space equal to the reference placement. In this case, the reference placement is the inertial reference frame, after the translation required by the position description, and the current placement is the so called Body Reference Frame, a reference frame that moves with the satellite and has two additional special properties. The first special property of the body reference frame is that it's origin is at the satellite's center of mass, making it invariant to rotational movements of the satellite. The second special property of the body reference frame is that in this reference frame the Inertia Tensor is constant and diagonal, which means that the basis vectors for this frame of reference are the normalized eigenvectors of the inertia tensor, that is, the body's principal axes of rotation.
+
+\section{Attitude Parameterization}
+
+\paragraph{}
+\indent
+	Now that the question "what is attitude?" has been answered, another question must be raised: "how to describe attitude mathematically?". 
+
+\indent
+	The straightforward method to construct an attitude representation is to make use of sequential rotations around different orthogonal axes. Using this approach the rotation matrix assumes the form:
+
+\begin{align}
+	R_{\phi \psi \ \theta} &= R_{\phi}R_{\psi}R_{\theta} \\
+	R_{\phi \psi \ \theta} &= \begin{bmatrix}  1 & 0 & 0 \\ 0  & cos\phi  & -sin\phi \\  0 & sin \phi & cos \phi \end{bmatrix} \begin{bmatrix}  cos\psi & 0 & sin\psi \\ 0  & 1  & 0 \\  -sin \psi & 0 & cos \psi \end{bmatrix} \begin{bmatrix}  cos \theta & -sin \theta & 0 \\ sin \theta  & cos\theta  & 0 \\  0 & 0 & 1 \end{bmatrix}\\
+	R_{\phi \psi \ \theta} &= \begin{bmatrix}  cos\psi cos\theta & -cos\psi sin\theta & sin\psi \\ cos\phi sin\theta + sin\phi cos\theta sin\phi & cos \phi cos \theta - sin \phi sin\psi sin\theta & -sin\phi cos\psi \\ sin\phi sin\theta - cos\phi sin\psi cos\theta & cos\theta sin\phi + cos\phi sin\psi sin\theta & cos\phi cos\psi    \end{bmatrix}
+\end{align}
+
+\indent 
+	Note that the choice of rotation matrices and it's sequence lead to different representations for attitude, in this case the chosen representation is the 3-2-1 sequence, that is, first a rotation about the z-axis, then a rotation about the y-axis and finally a rotation about the z-axis. Also note that this matrices are defined in the B' coordinate system. This is not a very practical representation, mostly beause it is hard to build a simple mathematical description of attitude dynamics based on this representation and it is not a convenient representation for digital implementations of control algorithms, since trigonometric function evaluation can be computationallly expensive and there are several redundant parameters in this representation, a statement supported by the fact that the knowledge of the 3 angles $\phi$, $\psi$, $\theta$, uniquely defines the rotation operation, for a given sequence of rotations, but the rotation matrix has 9 elements.
+
+\indent
+	A more elegant descritption of rotations is build upon Euler's Rotation Theorem, for which a proof can be found in \cite{PALAIS}, stated originally as: 
+
+\paragraph{Theorem: } \textit{In whatever way a sphere is turned about its centre, it is always possible to assign a diameter, whose direction in the translated state agrees with that of the initial state.}
+
+\indent
+	This means that for every rotation there exists an axis, that is, for every rotation there exists a vector invariant to this rotation. This can be expressed by: 
+
+\begin{equation}
+	Rv = v
+\end{equation}
+
+\indent
+	The theorem's proof states that there exists only one eigenvector for each rotation matrix whose corresponding eigenvalue is real and equal to 1. This vector defines the rotation's unique axis associated with its corresponding matrix, hence any such operation can actually be represented by a rotation axis and an angle of rotation. Based on such an ideia, the Rodrigue's Rotation Formula is going to be derived next to show an alternative way to compute the result of a rotation operation acting upon a vector.
+
+\indent
+	Initially, any vector can be decomposed in two components, one parallel to the rotation axis and one perpendicular to it, using the equations: 
+
+\begin{align}
+	\vec{x} &= \vec{x}_{||} + \vec{x}_{\_|\_} \\
+	\vec{x}_{||} &= (\vec{x} \cdot \vec{e}) \vec{e} \\
+	\vec{x}_{\_|\_} &= \vec{x} - (\vec{x} \cdot \vec{e}) \vec{e} \\
+\end{align}
+
+\indent 
+	Where $\vec{e}$ is the vector representing the rotation axis. The rotation of $\vec{x}$ is, then, the sum of the rotation of its components, due to linearity of rotations, but since the component parallel to the rotation axis inherits the property of invariance to this specific rotation operation, the only component that is actually affected by the operation is the perpendicular component. Note that, once it is given that the rotation only affects vectors perpendicular to the rotation axis, it is also defined that the rotations can be analysed in terms of a basis for the vector space defined by the plane perpendicular to the rotation axis. A convenient basis for such representation is given by the set $\left( \vec{x}_{\_|\_},  \vec{e} \times \vec{x}_{\_|\_} \right)$, constructed using the perpendicular component of the original vector (before rotation) and a second vector that is perpendicular to both the rotation axis, hence belongs to the rotation plane, and to the perpendicular component of the original vector, providing an orthogonal basis for the rotation plane. Now any vector that is the result of a rotation around the rotation axis can be described as: 
+
+\begin{equation}
+	\vec{x}' = \vec{x}_{||} + \vec{x}_{\_|\_} cos \alpha + \vec{e} \times \vec{v}sin \alpha
+\end{equation}
+\indent
+	The greek letter $\alpha$ being the rotation angle. Now, given a rotation axis and an angle, the resulting rotated vector can be computed without the usage of rotation matrices. For the last part of this analysis, a final form of attitude parameterization will be shown. This form is the result of some mathematical manipulation of the Rodrigue's rotation formula that results in the following experssion:
+
+\begin{equation}
+	\vec{x}' =  (cos \frac{\alpha }{2}-+\vec{e} sin\frac{\alpha }{2}) \vec{x} (cos \frac{\alpha }{2} - \vec{e} sin \frac{\alpha }{2})
+\end{equation}
+
+	The careful reader must have realized by now that equation 4.12 implicitly defines a multiplication of the vector $\vec{x}$ by the mathematical entity $(cos \frac{\alpha }{2} \pm \vec{e} sin \frac{\alpha }{2})$. This leads to the introduction of a mathematical object known as a quaternion. The quaternion can be understood as an extension of the complex numbers to a four dimensional space. It is defined by a scalar part and a imaginary part containing three components, written as: 
+
+\begin{equation}
+	q = q_0 + iq_1 + jq_2 + kq_3
+\end{equation}
+
+\indent
+	It is clear that the space of quaternions is isomorphic to the space of four dimensional vectors with real components. The relevant aspect of quaternions is that they come with the definition of a multiplication operation, defined by the multiplication of its basis elements as: 
+
+\begin{align}
+	i^2 &= j^2 = k^2 = ijk = -1 \\
+	jk &= i \\
+	ki & = j \\
+	kj & = -i \\
+	ik &= -j \\
+	ij &= k \\
+	ji &= -k\\
+\end{align}
+
+\indent
+	Multiplication between quaternions can be carried out by using the usual distributive rules from elementary algebra. 
+
+\indent
+	To proceed with the discussion about the rotation of vectors in three dimensional space based on quaternions, a pure quaternion must be defined. A pure quaternion is a quaternion whose scalar part is equal to zero. Note that the space of pure quaternions is isomorphic to the space of three dimensional vectors with real components, hence any vector in three dimensional space can also be represented by a pure quaternion. To define quaternion based rotations of three dimensional vectors, inspired by the rotation operations in the complex plane based on multiplication, one must ask if there is a general procedure to multiply a pure quaternion by an arbitrary quaternion and obtain a pure quaternion. The answer is: no. But, if one evaluates the multiplication of three quaternions: 
+
+\begin{equation}
+	v' = qvp
+\end{equation}
+
+\indent
+	Where $v$ is a pure quaternion, it can be shown that if $p$ equals the conjugate of $q$, then $v'$ is always a pure quaternion. The conjugate of $q$ is a quaternion with the same scalar part of $q$ but its imaginary part equals the imaginary part of $q$ multiplied by minus one. By comparing equation 4.22 with equation 4.12, the link between quaternion multiplication and the rotation of vectors in thee dimensional space can finally be established. If
+
+\begin{equation}
+	q = cos\frac{\alpha}{2} + (ie_1 + je_2 + ke_3)sin\frac{\alpha}{2} 
+\end{equation}
+
+\indent
+	Where $e_i$ is the i'th component of the unit vector that defines the rotation axis and $\alpha$ is the rotation angle, then the quaternion operation defined in equation 4.22 represents a rotation around an axis $\vec{e}$ by an angle $\alpha$ and any unit quaternion respecting the structure defined in equation 4.23 is a valid attitude parameterization.
+
+\indent
+	Quaternions are going to be used to represent attitude throughout this work.
