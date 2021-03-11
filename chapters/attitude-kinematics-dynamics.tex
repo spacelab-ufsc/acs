@@ -1,0 +1,176 @@
+%
+% geomagnetic-field-model.tex
+%
+% Copyright (C) 2020 by SpaceLab.
+%
+%
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+% International License. To view a copy of this license,
+% visit http://creativecommons.org/licenses/by-sa/4.0/.
+%
+%
+% \author Gabriel Mariano Marcelino <gabriel.mm8@gmail.com>
+%
+% \institution Universidade Federal de Santa Catarina (UFSC)
+%
+% \version 0.1.0
+%
+% \date 2020/07/16
+%
+
+\chapter{Attitude Kinematics and Dynamics} \label{ch:attitude-kinematics-dynamics}
+
+\section{Introduction}
+
+\paragraph{}
+\indent 
+	The objetive of this section is to derive the laws that govern the evolution of attitude and angular velocity over time due to externally applied torques. The procedure adopted for this derivation is based on going through the time derivatives of the attitude quaternion and the angular momentum of the satellite.
+
+\section{Attitude Kinematics}
+
+\paragraph{}
+\indent
+	Essentially, the derivation of an expression for the rate of change of an attitude quaterion with respect to time starts from the basic concepts on differentiation, that is:
+
+\begin{equation}
+	\dot{q}(t) = lim_{dt \rightarrow 0} \frac{q(t+dt) - q(t)}{dt}
+\end{equation}
+
+\indent
+	Where $q(t)$ is the quaternion that relates a reference vector $\vec{v}$ to it's rotated version, $\vec{v}'$, through the equation:
+
+\begin{equation}
+	\vec{v}'(t) = q(t)\vec{v} q(t)^*
+\end{equation}
+
+\indent
+	Hence, as $q(t)$ changes with time, $\vec{v}$ is rotated through space with some angular velocity. by making the substitution $t \rightarrow t + dt$ in equation 5.2, it is stated that:
+
+\begin{equation}
+	\vec{v}'(t+dt) = q(t+dt)\vec{v} q(t+dt)^*
+\end{equation}
+
+\indent
+	But since it is known \textit{apriori} that $\vec{v}'(t + dt)$ is given by some rotation that takes $\vec{v}'(t)$ to $\vec{v}'(t + dt)$, given that the subject of this analysis is a rigid body under rotational motion, it is possible to write:
+
+\begin{align}
+	\vec{v}'(t + dt) &= \delta q \vec{v}'(t) \delta q^* \\
+	\vec{v}'(t + dt) &= \delta q( q(t) \vec{v} q(t)^* ) \delta q^*
+\end{align}
+
+\indent 
+	Hence, by comparison of equation 5.3 with equation 5.5:
+
+\begin{equation}
+	q(t + dt) = \delta q q(t)
+\end{equation}
+
+\indent
+	Now, $\delta q$ is defined conceptually as a quaternion that represents a rotation by some angle $d\theta$ with some instantaneous angular velocity $\vec{\omega}$, which means that:
+
+\begin{align}
+	\delta q &= cos\frac{d\theta}{2} + \hat{\omega}sin\frac{d\theta}{2} \\
+	\delta q &= cos\frac{| \vec{\omega} |dt}{2} + \hat{\omega}sin\frac{|\vec{\omega}|dt}{2}
+\end{align}
+
+\indent
+	Where $|\vec{\omega}|$ is the magnitude of angular velocity and $\hat{\omega}$ is an unit vector in the direction of the angular velocity vector, which is the vector that specifies the direction of rotation.
+
+\indent
+	Finally:
+
+\begin{align}
+	q(t + dt) &= \delta q q(t) \\
+	q(t + dt) &= (cos\frac{|\vec{\omega}|dt}{2} + \hat{\omega}sin\frac{|\vec{\omega}|dt}{2})q(t) \\	
+	q(t + dt) - q(t) &= (cos\frac{|\vec{\omega}|dt}{2} + \hat{\omega}sin\frac{|\vec{\omega}|dt}{2} - 1)q(t) \\
+	q(t + dt) - q(t) &= (-2sin^2\frac{|\vec{\omega}|dt}{4} + \hat{\omega}sin\frac{|\vec{\omega}|dt}{2})q(t) \\
+	\frac{q(t + dt) - q(t)}{dt} &= \left(\frac{-2sin^2\frac{|\vec{\omega}|dt}{4}}{dt} + \frac{\hat{\omega}sin\frac{|\vec{\omega}|dt}{2}}{dt}\right)q(t) 
+\end{align}
+
+\indent 
+	Taking the limit when $dt$ approaches zero for equation 5.13:
+
+\begin{equation}
+	 lim_{dt \rightarrow 0}\frac{q(t + dt) - q(t)}{dt} =  lim_{dt \rightarrow 0} \left(\frac{-2sin^2\frac{|\vec{\omega}|dt}{4}}{dt} + \frac{\hat{\omega}sin\frac{|\vec{\omega}|dt}{2}}{dt}\right)q(t)
+\end{equation}
+
+\indent
+	Since the limits can be treated separately:
+
+\begin{align}
+	 lim_{dt \rightarrow 0}\frac{-2sin^2\frac{|\vec{\omega}|dt}{4}}{dt} &=  lim_{dt \rightarrow 0} \frac{-2sin\frac{|\vec{\omega}|dt}{4}}{dt}  sin\left(\frac{|\vec{\omega}|dt}{4}\right) \\
+	 lim_{dt \rightarrow 0}  \frac{-2sin\frac{|\vec{\omega}|dt}{4}}{dt} &= -2\frac{|\vec{\omega}|}{4} \\
+	 lim_{dt \rightarrow 0} sin\left(\frac{|\vec{\omega}|dt}{4}\right) &= 0 \\
+	 lim_{dt \rightarrow 0}\frac{-2sin^2\frac{|\vec{\omega}|dt}{4}}{dt} &= 0
+\end{align}
+
+\indent 
+	For the second component of the sum:
+
+\begin{equation}
+	 lim_{dt \rightarrow 0} \frac{\hat{\omega}sin\frac{|\vec{\omega}|dt}{2}}{dt} = \frac{\hat{\omega}|\vec{\omega}|}{2}
+\end{equation}
+
+\indent
+	Finally, collecting the terms:
+
+\begin{align}
+	\dot{q}(t) &= lim_{dt \rightarrow 0} \left(\frac{-2sin^2\frac{|\vec{\omega}|dt}{4}}{dt} + \frac{\hat{\omega}sin\frac{|\vec{\omega}|dt}{2}}{dt}\right)q(t)\\
+	\dot{q}(t) &= \frac{1}{2}\vec{\omega}(t)q(t) 
+\end{align}
+
+\indent
+	This equations defines the evolution of the attitude over time as a function of the body's instantaneous angular velocity.
+
+\section{Attitude Dynamics}
+
+\paragraph
+\indent
+	To conclude the set of differential equations that determine the evolution of the attitude over time, it is necessary to find a differential equation that relates the rate of change of angular momentum to the torques applied to the body, with it's roots on Newton's second law. First, let the angular momentum vector, expressed in terms of the inertial reference basis vectors, be described in it's usual form:
+
+\begin{equation}
+	h_{I} = J_{I}\omega^{B}_{I}
+\end{equation}
+
+\indent
+	$h_{I}$ is the total angular momentum expressed in the inertial reference frame, $J_{I}$ is the inertia tensor expressed in the inertial reference frame and $\omega^B_I$ is the angular velocity vector of the body reference frame expressed in the inertial reference frame. By taking the time derivative of angular momentum the following expression is derived:
+
+\begin{equation}
+	\dot{h}_{I} = \dot{J}_{I}\omega^{B}_{I} + J_{I}\dot{\omega}^{B}_{I}
+\end{equation}
+
+\indent
+	Where the first term expresses the fact that, since the body reference frame is rotating, the inertia tensor described in terms of the axis of the inertial reference frame must change over time. Since this is not computationally convenient, it is easier to express the rate of change of the angular momentum vector in the body fixed reference frame, once the inertia tensor is, by definition, always constant in such frame. The angular momentum vector takes the form:
+
+\begin{equation}
+	h_{B} = J_{B}\omega^{B}_{B}
+\end{equation}
+
+\indent
+	Due to the fact that the basis vectors of the body reference frame are rotating with, the time derivative of the angular momentum expressed in the body reference frame is not so trivially derived. First, it is convenient to write:
+
+\begin{equation}
+	J_{B}\omega^{B}_{B} = J_{b1b1}\omega^{B}_1\hat{b}_1 + J_{b2b2}\omega^{B}_2\hat{b}_2  + J_{b3b3}\omega^{B}_3\hat{b}_3 
+\end{equation}
+
+\indent
+	Where $\omega^{B}_i$ is the ith component of the angular momentum vector in the body reference frame basis, $J_{bibi}$ is the ith diagonal element of the inertia tensor and $b_i$ is the ith basis vector of the body reference frame coordinate system. Hence, the derivative of the angular momentum takes the form:
+
+\begin{align}
+	\dot{h}_{B} &= J_{b1b1}\dot{\omega^{B}_1}\hat{b}_1 + J_{b2b2}\dot{\omega^{B}_2}\hat{b}_2  + J_{b3b3}\dot{\omega^{B}_3}\hat{b}_3 +  J_{b1b1}\omega^{B}_1\dot{\hat{b}}_1 + J_{b2b2}\omega^{B}_2\dot{\hat{b}}_2  + J_{b3b3}\omega^{B}_3\dot{\hat{b}}_3 \\
+	\dot{h}_{B} &= J_{B}\dot{\omega}^{B}_{B} + J_{b1b1}\omega^{B}_1 \vec{\omega_{B}} \times \hat{b}_1 + J_{b2b2}\omega^{B}_2 \vec{\omega_{B}} \times \hat{b}_2  + J_{b3b3}\omega^{B}_3 \vec{\omega_{B}} \times \hat{b}_3 \\
+	\dot{h}_{B} &=  J_{B}\dot{\omega}^{B}_{B} + \omega^{B}_{B} \times J_{B} \omega^{B}_{B}
+\end{align}
+
+\indent
+	Hence, an alternative form of Newton's second law can be written as
+
+\begin{equation}
+	\dot{h}_{B} = J_{B}\dot{\omega}^{B}_{B} + \omega^{B}_{B} \times h_{B} = \tau_{B}
+\end{equation}
+
+\indent 
+	Where $\tau_{B}$ is the sum of external torques expressed in terms of the body reference frame basis.
+
+\indent
+	The integration of the differential equations governing the time evolution of angular momentum and attitude, given an initial condition and an expression for the external torques, uniquely describes the rotational motion of the satellite.
