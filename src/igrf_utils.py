@@ -465,8 +465,7 @@ def synth_values(coeffs, radius, theta, phi, \
     B_radius = np.zeros(grid_shape)
     B_theta = np.zeros(grid_shape)
     B_phi = np.zeros(grid_shape)
-    
-    nmax = 1
+
     num = nmin**2 - 1
     for n in range(nmin, nmax+1):
         B_radius += (n+1) * Pnm[n, 0] * r_n * coeffs[..., num]
