@@ -1,0 +1,97 @@
+%
+% geomagnetic-field-model.tex
+%
+% Copyright (C) 2020 by SpaceLab.
+%
+%
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+% International License. To view a copy of this license,
+% visit http://creativecommons.org/licenses/by-sa/4.0/.
+%
+%
+% \author Gabriel Mariano Marcelino <gabriel.mm8@gmail.com>
+%
+% \institution Universidade Federal de Santa Catarina (UFSC)
+%
+% \version 0.1.0
+%
+% \date 2020/07/16
+%
+
+\chapter{Orbital Motion Model} \label{ch:orbital-motion-model}
+
+\section{Introduction}
+
+\paragraph{}
+\indent 
+Since most LEO satellite orbits are near-circular, for this analysis a circular orbit will be assumed, based on the orbital motion model used in \cite{Edemar}.
+
+\indent
+The objective of this model is to associate every instant in time to a position contained in a feasible orbit around the Earth.
+
+\section{Model Description}
+
+\paragraph{}
+\indent
+
+The mathematical description of a circular orbit is defined by five parameters: three angles that define the orbital plane with respect to the $xy$ plane, through successive rotations; a radius, defining the distance between the Earth's center to the satellite's center of mass; and an angle that defines the angular position of the satellite's center of mass in the orbit at an instant. Note that since the orbit is approximated as a circle, both the radius and the rotation of the orbital plane are constant, implying that only the angular position in the orbit changes with time. 
+
+\indent 
+The construction of the proposed representation of orbital motion can be realized by successive rotations of a circular orbit in the $xy$ plane by a set of angles $\alpha$, $\beta$, $\gamma$. Hence any point $P$ contained in the orbit can be computed using the relation:
+
+\begin{equation}
+	P = R_{\alpha \beta \gamma}P_{0}
+\end{equation}
+
+\indent
+Where:
+
+\begin{align}
+	R_{\alpha \beta \gamma} &= R_{\alpha}R_{\beta}R_{\gamma} \\
+	R_{\alpha} &= \begin{bmatrix}
+					1 && 0           && 0            \\
+					0 && cos(\alpha) && -sin(\alpha) \\
+					0 && sin(\alpha) &&  cos(\alpha)
+				 \end{bmatrix} \\			 
+	R_{\beta} &= \begin{bmatrix}
+					cos(\beta) && 0           && sin(\beta)         \\
+					0 && 1 &&  0\\
+					-sin(\beta) &&  &&  cos(\beta) \\
+				 \end{bmatrix} \\			 
+	R_{\gamma} &= \begin{bmatrix}
+					cos(\gamma) && -sin(\gamma           && 0            \\
+					sin(\gamma) && cos(\gamma) && ) \\
+					0 && 0 &&  1 \\
+				 \end{bmatrix} \\
+\end{align}
+
+\indent
+Note that matrix multiplication is not a commutative operation, hence the order of rotations, $\alpha$-$\beta$-$\gamma$, must be respected.
+
+\indent
+Since $ P_0 (\theta) $ is a point contained in a circular orbit defined in the $xy$ plane, a convenient parameterization for the curve is:
+
+\begin{equation}
+	P_0 = \begin{bmatrix}
+			x \\
+			y \\
+			z
+		  \end{bmatrix} = \begin{bmatrix}
+							r cos \theta \\
+							r sin \theta \\
+							0
+		  				  \end{bmatrix}
+\end{equation}
+
+\indent
+Where r is the constant radius, and theta is the angular position parameter.
+
+\indent 
+Finally, for the link between the orbital position and time to be established, an expression for the angular position as a function of time must be defined. Assuming that the there is no energy dissipation in the orbital motion, implying that the kinetic energy of the satellite's center of mass is constant, then the angular velocity of such motion is constant and the angular position evolves linearly in time. Mathematically:
+
+\begin{equation}
+	\theta (t) = \omega_o t = \sqrt{\frac{Gm}{(R_E + h)^3}}t
+\end{equation} 
+
+\indent
+Where $G$ is the gravitational constant, $m$ is Earth's mass, $R_E$ is Earth's surface average radius and $h$ is the altitude, using the Earth's surface average radius as reference, as established in \cite{Edemar}. 
