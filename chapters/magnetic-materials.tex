@@ -1,0 +1,125 @@
+%
+% geomagnetic-field-model.tex
+%
+% Copyright (C) 2020 by SpaceLab.
+%
+%
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+% International License. To view a copy of this license,
+% visit http://creativecommons.org/licenses/by-sa/4.0/.
+%
+%
+% \author Gabriel Mariano Marcelino <gabriel.mm8@gmail.com>
+%
+% \institution Universidade Federal de Santa Catarina (UFSC)
+%
+% \version 0.1.0
+%
+% \date 2020/07/16
+%
+
+\chapter{Attitude Kinematics and Dynamics} \label{ch:attitude-kinematics-dynamics}
+
+\section{Introduction}
+
+\paragraph{}
+\indent 
+	The objective of this section is to derive the expressions that relate an external magnetic field, in this case the Geomagnetic field, to it's interaction with the magnetic materials that are going to be used for the stabilization task based on the torque produced by this interaction. There are two types of magnetic materials that are going to be used for controlling the attitude of the satellite, hard and soft magnetic materials, both described in the following sections.
+
+\section{Properties of Magnetic Materials}
+
+\paragraph{}
+\indent
+	Different materials produce different responses due to the presence of an external magnetic field, mostly due to it's effect on the individual magnetic moments of the atoms that compose the material. The relation between the orientation of magnetic domains and the externally applied magnetic field is usually characterized by magnetic hysteresis loops, a topic more deeply described in \cite{ZAMBONETTI}. There are some useful physical properties that can be extracted from the hysteresis loop of a material; the first is the induction remanence, which is the magnetic flux density retained by the material, due to the alignment of the magnetic moments of it's atoms, after the extinction of the external magnetic field. Note that, if the induction remanence is high, the material starts acting like a magnetic flux source and can be understood as a magnet. The second relevant property for this work is that of magnetic coercitivity, which is defined as the external magnetic field necessary to demagnetize a magnetic material, that is, to make the magnetic flux density retained by the material absent.
+
+\indent
+	The magnetic materials that are most used to fabricate permanent magnets are the hard magnetic materials, characterized by a large induction remanence, hence by their capacity of acting as magnetic flux sources after the process of magnetization, while soft magnetic materials are characterized by their low magnetic coercitivity, meaning that they can be demagnetized using low intensity magnetic fields, are most used to concentrate magnetic flux due to their large magnetic permeability, which means that the material obtains a large magnetization in the presence of an external magnetic field.
+
+\section{Permanent Magnets}
+
+\paragraph
+\indent
+	Since permanent magnets are objects that appear to produce it's own magnetic field, they are subject to alignment torque in the presence of an external magnetic field and to characterize the intensity of this phenomenon it is necessary to relate the material's magnetic flux density to it's magnetic moment, which is exactly a measure of the amount of magnetization inside the material. First, it is necessary to present the relation between magnetization, magnetic flux density and magnetic field, stated as:
+
+\begin{equation}
+	\vec{B} = \mu_o (\vec{H} + \vec{M})
+\end{equation}
+
+\indent
+	Where $\vec{B}$ is the magnetic flux density, $\vec{H}$ is the magnetic field, $\vec{M}$ is the magnetization field, which represents the alignment of magnetic moments inside the material, and $\mu_o$ is the magnetic permeability of the vacuum. The magnetic moment is defined as:
+
+\begin{equation}
+	\vec{m} = \int \int \int_V \vec{M}dv
+\end{equation}
+
+\indent
+	That is, total magnetization inside a volume, which is the volume of the magnetic material in question. Assuming that the magnetization is uniform inside the material, then 
+
+\begin{equation}
+	\vec{m} = V\vec{M}
+\end{equation}
+
+\indent
+	Now the magnetic moment can be written in terms of the externally applied field and the magnetic flux density in the material:
+
+\begin{equation}
+	\vec{m} = \frac{1}{\mu_o}V\vec{B} - V\vec{H}
+\end{equation}
+
+\indent 
+	Considering the subject of this derivation as a permanent magnet, it is possible to conclude that the magnetic flux density is much greater than the applied magnetic field, hence it can be approximated by the material's induction remanence, the amount of magnetic flux density in the absence of an external field, transforming equation 7.4 into:
+
+\begin{equation}
+	\vec{m} = \frac{V}{\mu_0}\vec{B}_r
+\end{equation}
+
+\indent
+	Where $\vec{B}_r$ stands for the induction remance of the material. Finally, by the definition of magnetic moment, the alignment torque acting upon the permanent magnet due to an external field is given by:
+
+\begin{align}
+	\vec{\tau}_{pm} &= \vec{m} \times \mu_o \vec{H} \\
+	\vec{\tau}_{pm} &= V\vec{B}_r \times \vec{H}
+\end{align}
+
+\section{Soft Magnetic Materials}
+\paragraph
+\indent
+	When it comes to soft magnetic materials, due to it's very low coercitivity, the approximation of constant magnetization due to the externally applied field does not hold, hence it is necessary to model the change in the material's magnetic flux density as a function of the magnetic field using the hysteresis loop. 
+
+\indent
+	The fact that the magnetic flux density inside the material changes as the external magnetic field evolves is very important to the problem of attitude stabilization, because the movement of the magnetic domains in the material's interior is not frictionless, hence every time the magnetic flux density changes some of the mechanical energy of the satellite, responsible for the variation of the magnetic field inside the material, since the geomagnetic field changes very slowly in time, is transformed into heat, providing the damping necessary to make the satellite's angular velocity decrease as time evolves. This phenomenon arises naturally when the hysteresis process is considered in the calculations, as it will be shown next.
+
+\indent
+	It is very hard to model the hysteresis loop from first principles, hence it is usual to use the data provided by the material supplier to build empirical models. In this work, the model selected is described in \cite{FLATLEY}, in which the authors build an empirical function that uses the saturation magnetic flux density, the remanence and the coercitivity as parameters to approximate the experimental hysteresis loop. The authors then shown that, given  the proposed parameterization, the differential equation that governs the time evolution of the magnetic flux density inside the material is:
+
+\begin{equation}
+	\frac{dB}{dt} = \frac{2}{\pi}\frac{1}{H_c} tan\left( \frac{\pi}{2}\frac{B_r}{B_s} \right)B_s cos^2 \left(\frac{\pi}{2}\frac{B_r}{B_s}  \right) \left( \frac{H - H_{lim}(B)}{2H_c} \right)^2\frac{dH}{dt}
+\end{equation}
+
+\indent
+	Where $H_c$ is the coercitivity, $B_r$ is the remanence, $B_s$ is the saturation magnetic flux density and $H_{lim}(B)$ is the value of magnetic field of the outer hysteresis loop at a given magnetic flux density, such that $H_{lim}(B)$ is positive when $H$ is increasing and negative when $H$ is descreasing. For this equation all values are scalars since it is assumed that the magnetic flux density is always in the direction of the vector normal to the cross section of the magnetic material and that only the component of the external field parallel to the magnetic flux density direction affects the magnetization.
+
+\indent
+	Now that the magnetic flux density can be computed over time, it is necessary to compute it's associated magnetic moment. Since the geomagnetic field is much weaker than the field produced by the magnetizaton of the material, the magnetic moment can be written as:
+
+\begin{equation}
+	\vec{m} = \frac{1}{\mu_o}V\vec{B}(\vec{H})
+\end{equation}
+
+\indent Hence:
+
+\begin{equation}
+	\vec{\tau}_{hyst} = V\vec{B}(\vec{H}) \times \vec{H} 
+\end{equation}
+
+\indent
+	Finally, given that the total energy dissipated due to hysteresis loss in a full cycle of the external magnetic field is given by the area of the hystersis loop multiplied by the object's volume, it is possible to make the conceptual link between the damping provided by the hysteresis phenomena and the derived equation for the torque. The work done by the derived torque along a infinitesimal angular displacement is given by:
+
+\begin{align}
+	W &= \int_{\theta}^{\theta + d\theta}\tau_{hyst}d\theta \\
+	W &= \int_{\theta}^{\theta + d\theta} V|\vec{B}(H) | |\vec{H}|sin \theta d\theta \\
+	W &= V|\vec{B}(H) | |\vec{H}|(cos(\theta) - cos(\theta + d\theta))
+\end{align}
+
+\indent
+	Hence the work done by the torque along an infinitesimal angular displacement is proportional to the area under the hysteresis loop for a small variation of the external magnetic field due to the rotation of the satellite.

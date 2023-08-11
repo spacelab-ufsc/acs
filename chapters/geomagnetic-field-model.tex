@@ -1,0 +1,115 @@
+%
+% geomagnetic-field-model.tex
+%
+% Copyright (C) 2020 by SpaceLab.
+%
+%
+% This work is licensed under the Creative Commons Attribution-ShareAlike 4.0
+% International License. To view a copy of this license,
+% visit http://creativecommons.org/licenses/by-sa/4.0/.
+%
+%
+% \author Gabriel Mariano Marcelino <gabriel.mm8@gmail.com>
+%
+% \institution Universidade Federal de Santa Catarina (UFSC)
+%
+% \version 0.1.0
+%
+% \date 2020/07/16
+%
+
+\chapter{Geomagnetic Field Model} \label{ch:geomagnetic-field-model}
+
+\section{Introduction}
+
+\paragraph{}
+\indent 
+The International Geomagnetic Reference Field (IGRF) is a standard mathematical description of the Earth's magnetic field widely used in studies of the magnetosphere. The model is developed and maintained by the International Association of Geomagnetism and Aeronomy (IAGA) and it's going to be the model used in this simulation.
+
+\indent
+The objective of this section is to derive a mathematical expression that defines a magnetic flux density field over a Cartesian space described in spherical coordinates, hence by the end of the derivation it must be possible to assign a vector, representing the local magnetic field, to every point of an orbit around the Earth. 
+
+\section{Model Description}
+
+\paragraph{}
+\indent
+
+Assuming that there are no sources of magnetic field, that is, free currents, outside the Earth's surface, a scalar potential description of the magnetic field becomes feasible, since the field becomes irrotational and the existence of the potential field can be proved given the existence of a solution to Poisson's equation. Given the linearity of free-space, a well known solution to Poisson's equation can be found by the expansion of Green's function in terms of spherical harmonics, but since the source of magnetic potential, mathematically found by deriving the Poisson equation for the problem, cannot be fully known for the case of the geomagnetic field, a statistical approach is used to find the coefficients of the spherical harmonics expansion, based on measurement data, providing an approximated model for the geomagnetic field. The final equation for the model, described in \cite{ET}, is: 
+
+\begin{equation}
+	V(r,\theta,\phi,t) = a \sum_{n=1}^{N} \sum_{m=0}^n\left(  \frac{a}{r}\right)^{n+1}\left[g_{n}^{m}\left(t\right)cos\left(m\phi\right) + h_{n}^{m}\left(t\right)sin\left(m\phi\right)\right]P_{n}^{m}\left(cos\theta\right)
+\end{equation} 
+
+\indent
+Where $a$ is the Earth's radius, $g_{n}^{m}$,$h_{n}^m$ are named Gauss Coefficients and $P_{n}^{m}$ is the Schmidt Quasi-Normalized Associated Legendre Functions of Degree n and Order m, deeply described in \cite{DW}.
+
+\indent
+Is this model, the convention used for the spherical coordinate system defines $r$ as the radial distance from the center of the Earth, $\theta$ as the co-latitude and $\phi$ as the east longitude.
+
+\indent 
+Based on the equation 2.1, it is possible to compute the magnetic flux density through the expression:
+
+\begin{equation}
+	\vec{B} = - \nabla V
+\end{equation}
+
+\indent
+In this equation, the gradient operator is described in spherical coordinates, hence the components of the magnetic flux density vector are given by:
+
+\begin{align*}
+	B_{r} &= -\frac{\partial V}{\partial r}    \\	
+	B_{\theta} &= -\frac{1}{r}\frac{\partial V}{\partial \theta}   \\
+	B_{\phi} &= -\frac{1}{r sin \theta}\frac{\partial V}{\partial \phi}    \\
+\end{align*}
+
+\indent
+An explicit representation for the magnetic flux density vector with regard to it's basis vectors is given by:
+
+\begin{equation}
+	\vec{B} = B_{r}\hat{r} + B_{\theta}\hat{\theta} + B_{\phi}\hat{\phi}
+\end{equation}
+
+\indent
+Where $\hat{r}$, $\hat{\theta}$ and $\hat{\phi}$ are unit vectors forming a basis for a curvilinear space. 
+
+\indent
+Since vectors are invariant to coordinate transformations (see \cite{AH} for a detailed explanation), a direct consequence of the fact that physical quantities must not change when it's mathematical representation changes, the use of the spherical coordinates representation of the magnetic flux density field should not be a problem, as long as the basis vectors are properly defined.
+
+\indent
+A definition for the basis vectors can be constructed based on the relation between Cartesian coordinates and spherical coordinates, given by:
+
+\begin{align*}
+	x &= r sin \theta cos \phi \\
+	y &= r sin \theta sin \phi \\
+	z &= r cos \theta
+\end{align*}
+ 
+\indent
+To arrive at a basis all it takes is to differentiate the vector ($x$,$y$,$z$) with respect to ($r$,$\phi$,$\theta$), arriving at a Jacobian matrix. The Jacobian matrix represents the amount of deformation caused by a transformation from Cartesian to spherical coordinates, establishing a relation between the systems. By simple differentiation rules, one gets:
+
+\begin{align*}
+	\vec{R} &= (x,y,z) \\
+	\frac{\partial R}{\partial r} &= (sin\theta cos\phi,sin\theta sin\phi,cos\theta) \\
+	\frac{\partial R}{\partial \theta} &= (rcos\theta cos\phi, rcos\theta sin\phi, -rsin\theta) \\
+	\frac{\partial R}{\partial \phi} &= (-rsin\theta sin\phi, rsin\theta cos\phi, 0) \\
+\end{align*}
+
+\indent
+After normalization:
+
+\begin{align*}
+	\hat{r} &= \frac{\partial R}{\partial r} = (sin\theta cos\phi,sin\theta sin\phi,cos\theta) \\
+	\hat{\theta} &= \frac{1}{r}\frac{\partial R}{\partial \theta}  = (cos\theta cos\phi, cos\theta sin\phi, -sin\theta) \\
+	\hat{\phi} &= \frac{1}{r sin \theta}\frac{\partial R}{\partial \phi} = (-sin\phi, cos\phi, 0) \\
+\end{align*}
+
+\indent 
+By using such basis, it is possible to verify the relation: 
+
+\begin{equation}
+	\vec{B} = B_{x}\hat{x} + B_{y}\hat{y} + B_{z}\hat{z} = B_{r}\hat{r} + B_{\theta}\hat{\theta} + B_{\phi}\hat{\phi}
+\end{equation}
+
+\indent
+And the spherical coordinates representation of vector field can be used directly in the computation of the magnetic flux density at every point of an orbit around the Earth.
+
